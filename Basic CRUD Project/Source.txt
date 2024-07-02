@@ -1,1 +1,3 @@
  https://www.codeofaninja.com/php-oop-crud-tutorial/
+Đây là web hướng dẫn về crud bằng PHP.
+Project được viết giống với nguồn và thêm chức năng lưu trữ các activities diễn ra trên web được lưu trữ ở phpmyadmin.
