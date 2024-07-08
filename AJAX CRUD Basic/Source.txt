@@ -1,0 +1,4 @@
+https://www.chiefofstack.com/2021/01/23/basic-ajax-crud-app-using-php-mysql-and-jquery/
+Đây là web hướng dẫn về ajax crud bằng PHP.
+Project được viết giống với nguồn và thêm thuộc tính hình ảnh.
+Có thể xem kết quả chương trình qua file pdf có trong folder Lab05.
