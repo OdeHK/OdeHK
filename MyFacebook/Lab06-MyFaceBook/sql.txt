@@ -1,0 +1,41 @@
+CREATE TABLE users (
+	id INTEGER NOT NULL AUTO_INCREMENT,
+	username CHAR(255) NOT NULL,
+	password VARCHAR(512) NOT NULL,
+	fullname VARCHAR(256) NOT NULL,
+	role INTEGER,
+	status INTEGER,
+	PRIMARY KEY (id),
+	UNIQUE INDEX username(username)
+);
+
+INSERT INTO users SET username='admin',password=PASSWORD('admin@123'),fullname='Admim',role=1,status=1;
+INSERT INTO users SET username='hoang',password=PASSWORD('hoang@456'),fullname='Hoang Khuong',role=0,status=1;
+INSERT INTO users SET username='ode',password=PASSWORD('ode@789'),fullname='Ode',role=0,status=1;
+
+CREATE TABLE posts (
+	id INTEGER NOT NULL AUTO_INCREMENT,
+	userId INTEGER,
+	message TEXT,
+	index posts_userId(userId),
+	created_at DATETIME,
+	updated_at DATETIME,
+	FOREIGN KEY (userId) REFERENCES users(id) ON DELETE CASCADE,
+	PRIMARY KEY (id)
+
+);
+
+CREATE TABLE comments (
+	id INTEGER NOT NULL AUTO_INCREMENT,
+	userId INTEGER,
+	postId INTEGER,
+	comment TEXT,
+	index comment_userId(userId),
+	index comment_postId(postId),
+	created_at DATETIME,
+	updated_at DATETIME,
+	FOREIGN KEY (postId) REFERENCES posts(id) ON DELETE CASCADE,
+	FOREIGN KEY (userId) REFERENCES users(id) ON DELETE CASCADE,
+	PRIMARY KEY (id)
+
+);
