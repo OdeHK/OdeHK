@@ -85,4 +85,19 @@ $(document).ready(function() {
 		}, "json");
 	});
 	
+	// Delete POST
+	$(".listPost").on("click", ".remove", function() {
+		var id = this.id;
+		var split_id = id.split("_");
+		var deleteIndex = split_id[1];
+		
+		$.post("ajax_actions.php", {
+			action_area: "user",
+			action: "delete_post",
+			post_id: deleteIndex
+		}, function(data) {
+			$("#div_" + deleteIndex).remove();
+		}, "json");
+	});
+	
 });

@@ -156,4 +156,28 @@ class Post extends Database
 		}
 		return true;
 	}
+	
+	public function deletePost($id)
+	{
+		if (!$this->checkIfOwner($id))
+		{
+			return false;
+		}
+		
+		try
+		{
+			$sql = "DELETE FROM $this->table_name WHERE id=?";
+			$stmt = $this->conn->prepare($sql);
+			$stmt->bind_param("i", $id);
+			$stmt->execute();
+			
+			return true;
+		}
+		catch(Exception $e)
+		{
+			// do sth
+		}
+		
+		return true;
+	}
 }

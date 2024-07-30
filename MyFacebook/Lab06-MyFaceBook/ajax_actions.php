@@ -128,6 +128,24 @@ if ($_POST['action_area'] == "user")
 			$response['data'] = "Error while editing post";
 		}
 	}
+	else if ($action == "delete_post")
+	{
+		$post_id = $_POST['post_id'];
+		$post_model = new Post();
+		
+		$status = $post_model->deletePost($post_id);
+		
+		if ($status)
+		{
+			$response['status'] = true;
+			$response['data'] = "OK";
+		}
+		else
+		{
+			$response['status'] = false;
+			$response['data'] = "Error while deleting post";
+		}
+	}
 }
 
 echo json_encode($response);
