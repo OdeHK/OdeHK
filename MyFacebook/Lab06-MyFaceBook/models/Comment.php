@@ -41,4 +41,33 @@ class Comment extends Database
 		
 		return $commentInfo;
 	}
+	
+	public function loadComments($postId, $limits=100)
+	{
+		$comments = array();
+		
+		try 
+		{
+			$sql = "SELECT id 
+					FROM $this->table_name
+					WHERE postId=? ORDER BY ID ASC LIMIT ?";
+			
+			$stmt = $this->conn->prepare($sql);
+			$stmt->bind_param("is", $postId, $limits);
+			$stmt->execute();
+			
+			$result = $stmt->get_result();
+			
+			while($comment = $result->fetch_assoc())
+			{
+				$comments[] = $this->loadComment($comment['id']);
+			}
+		}
+		catch(Exception $e)
+		{
+			//do sth
+		}
+		
+		return $comments;
+	}
 }

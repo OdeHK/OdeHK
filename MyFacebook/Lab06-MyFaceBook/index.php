@@ -29,7 +29,7 @@ if (isset($_POST['Change_Password']))
 	<head>
 		<link href="post.css" rel="stylesheet">
 		<link href="fbpost.css" rel="stylesheet">
-		<link href="chat/chat.css" rel="stylesheet">
+		<!--<link href="chat/chat.css" rel="stylesheet"> -->
 		
 		<script type="text/javascript" charset="utf8" src="js/jquery-3.5.0.min.js"></script>
 		
@@ -37,8 +37,8 @@ if (isset($_POST['Change_Password']))
 		<script src="script.js"></script>
 		
 		<!-- CHAT AJAX -->
-		<script src="js/socket.io.js"></script>
-		<script src="js/chatscript.js"></script>
+		<!-- <script src="js/socket.io.js"></script> -->
+		<!-- <script src="js/chatscript.js"></script> -->
 		
 		<meta name="Description" content="Facebook Style Homepage"/>
 	</head>

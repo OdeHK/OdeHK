@@ -111,4 +111,49 @@ class Post extends Database
 		
 		return $posts;
 	}
+	
+	public function checkIfOwner($postId)
+	{
+		$postInfo = $this->getPostInfo($postId);
+		
+		if (!$postInfo)
+		{
+			//not found the post
+			return false;
+		}
+		
+		if ($postInfo->userId != SessionManager::getUserId())
+		{
+			// not the owner
+			return false;
+		}
+		
+		return true;
+	}
+	
+	public function editPost($postId, $newpost)
+	{
+		if (!$this->checkIfOwner($postId))
+		{
+			return false;
+		}
+		
+		try
+		{
+			$sql = "UPDATE $this->table_name
+					SET message=?
+					WHERE id=?";
+			
+			$stmt = $this->conn->prepare($sql);
+			$stmt->bind_param("si", $newpost, $postId);
+			$stmt->execute();
+			
+			return true;
+			
+		} catch(Exception $e)
+		{
+			//do sth
+		}
+		return true;
+	}
 }
