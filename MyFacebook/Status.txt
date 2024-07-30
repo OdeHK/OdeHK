@@ -1,1 +1,2 @@
-26/07/2024: On Programing - AJAX CRUD for POST
+26/07/2024: On Programing - AJAX CRUD for POST (done)
+29/07/2024: Friend Panel and chat
