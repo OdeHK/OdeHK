@@ -8,7 +8,7 @@ class Post extends Database
 		parent::__construct();
 	}
 	
-	public function createPost($post)
+	public function createPost($post, $imagePath = NULL) // add image
 	{
 		if (!SessionManager::isUserLoggedIn())
 		{
@@ -19,10 +19,10 @@ class Post extends Database
 		try
 		{
 			// SQL to create a new post
-			$sql = "INSERT INTO $this->table_name SET userId=?, message=?";
+			$sql = "INSERT INTO $this->table_name SET userId=?, message=?, imagePath=?"; 
 			
 			$stmt = $this->conn->prepare($sql);
-			$stmt->bind_param("is", $userId, $post);
+			$stmt->bind_param("iss", $userId, $post, $imagePath);
 			// UserId is integer and post is string
 			$stmt->execute();
 			
@@ -63,6 +63,7 @@ class Post extends Database
 				$postInfo = (object) $post;
 				
 				$postInfo->owner = $user->getUserInfoById($postInfo->userId);
+				//get image if existed from img/post folder
 				$postInfo->comments = [];
 				
 				if ($withComment)

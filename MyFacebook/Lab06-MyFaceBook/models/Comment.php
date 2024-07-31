@@ -70,4 +70,34 @@ class Comment extends Database
 		
 		return $comments;
 	}
+	
+	public function createComment($postId, $comment)
+	{
+		if (!SessionManager::isUserLoggedIn())
+		{
+			return false;
+		}
+		
+		$userId = SessionManager::getUserId();
+		
+		try 
+		{
+			$sql = "INSERT INTO $this->table_name
+					SET userId=?, postId=?, comment=? ";
+			
+			$stmt = $this->conn->prepare($sql);
+			$stmt->bind_param("iis", $userId, $postId, $comment);
+			$stmt->execute();
+			
+			$id = $stmt->insert_id;
+			
+			return $this->loadComment($id);
+		}
+		catch (Exception $e)
+		{
+			// do sth
+		}
+		
+		return false;
+	}
 }

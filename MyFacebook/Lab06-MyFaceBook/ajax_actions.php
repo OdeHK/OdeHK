@@ -49,10 +49,44 @@ if ($_POST['action_area'] == "user")
 	
 	if($action == "new_post")
 	{
-		$postText =$_POST['post'];
+		$postText = $_POST['post'];
+		$post_image = isset($_FILES['post_image']) ? $_FILES['post_image'] : null;
+		
 		$post_model = new Post();
 		
-		$postInfo = $post_model->createPost($postText);
+		$imagePath = '';
+		if ($post_image && $post_image['error'] === UPLOAD_ERR_OK)
+		{
+			$imageName = time().'-'.basename($post_image['name']);
+			$uploadDir = 'img/post/';
+			
+			$imagePath = $uploadDir . $imageName;
+			// To have a good separation, we can create directory such as img/post/year/month/day
+			// then we must create a new directory by 'mkdir'
+			/*
+			$yearDir = date("Y", time());
+			$baseDir = 'img/post/';
+			$uploadDir = $baseDir.yearDir.'/';
+			
+			// Check that the directory exited before upload
+			if (!file_exists($uploadDir))
+			{
+				mkdir($uploadDir, 0777, true);
+			}
+			*/
+			
+			
+			if (!move_uploaded_file($post_image['tmp_name'], $imagePath))
+			{
+				$response['status'] = false;
+				$response['data'] = "Error uploading the file";
+				
+			}
+			
+		}
+		
+		
+		$postInfo = $post_model->createPost($postText, $imagePath); // add image
 		
 		if ($postInfo)
 		{
@@ -78,6 +112,7 @@ if ($_POST['action_area'] == "user")
 						
 						<div class="content">
 							<p id="edit_%1$s" class="Ediv">%2$s</p>
+							%4$s
 						</div>
 						
 						<div class="social">
@@ -100,7 +135,10 @@ if ($_POST['action_area'] == "user")
 						</div>
 					</div>';
 			
-			$response['data'] = sprintf($html, htmlentities($postInfo->id), htmlentities($postInfo->message), htmlentities($postInfo->owner->fullname));
+			// If has image, adding <img> tag into html
+			$imageHTML = $imagePath ? '<img src="'.htmlentities($imagePath).'" alt="Post Image">' : '';
+			
+			$response['data'] = sprintf($html, htmlentities($postInfo->id), htmlentities($postInfo->message), htmlentities($postInfo->owner->fullname), $imageHTML);
 			
 		}
 		else 
@@ -145,6 +183,32 @@ if ($_POST['action_area'] == "user")
 			$response['status'] = false;
 			$response['data'] = "Error while deleting post";
 		}
+	}
+	// ACTIONS FOR COMMENTS
+	else if ($action == "new_comment")
+	{
+		$commentModel = new Comment();
+		$comment_text = $_POST['comment_text'];
+		$postId = $_POST['post_id'];
+		
+		$commentInfo = $commentModel->createComment($postId, $comment_text);
+		
+		$comment_html = 
+						'<div class="comment" id="comment_%s">
+							<div class="comment_author_profile_picture">
+								<img class="co-logo" src="http://placehold.it/40x40" />
+							</div>
+							<div class="comment_details">
+								<div class="comment_author">
+									<span>%s</span>
+								</div>
+								<div class="comment_text">
+									<p>%s</p>
+								</div>
+							</div>
+						</div>';
+		
+		$response['data'] = sprintf($comment_html, htmlentities($commentInfo->id), htmlentities($commentInfo->owner->fullname), htmlentities($commentInfo->comment));
 	}
 }
 

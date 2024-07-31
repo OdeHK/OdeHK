@@ -3,7 +3,7 @@ session_start();
 
 class SessionManager
 {
-	public static function loggout()
+	public static function logout()
 	{
 		session_destroy();
 	}

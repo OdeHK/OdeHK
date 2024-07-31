@@ -4,12 +4,17 @@ $(document).ready(function() {
 	$(".addPost").click(function() {
 		var post_text = $("textarea").val();
 		
-		if ($.trim($("textarea").val()) == '')
+		// image file
+		var post_image = $("#image")[0].files[0];
+		
+		if ($.trim($("textarea").val()) == '' && !post_image) // add condition for image
 		{
-			return alert("Please add some text to create new post!");
+			return alert("Please add some text or add an image to create new post!");
 		}
 		
 		$("textarea").val('') //Clear textarea
+		$("#image").val('');
+		// clear browse file
 		
 		if($("div").hasClass("f-card"))
 		{
@@ -30,16 +35,42 @@ $(document).ready(function() {
 			var nextindex = 1;
 		}
 		
+		var formData = new FormData();
+		formData.append('action_area', 'user');
+		formData.append('dataType', 'html');
+		formData.append('action', "new_post");
+		formData.append('post', post_text);
+		if (post_image)
+		{
+			formData.append('post_image', post_image);
+		}
+		
+		formData.append('nextindex', nextindex);
+		/*
 		$.post("ajax_actions.php", {
 			action_area: "user",
 			dataType: 'html',
 			action: "new_post",
 			post: post_text,
+			post_image: post_image.name,
 			nextindex: nextindex
 		}, function(data) {
 			console.log(data);
 			($(".listPost").prepend(data.data))
 		}, "json");
+		*/
+		$.ajax({
+			url: 'ajax_actions.php',
+			type: 'POST',
+			data: formData,
+			contentType: false,
+			processData: false,
+			dataType: 'json',
+			success: function(data) {
+				//console.log(data);
+				$(".listPost").prepend(data.data);
+			}
+		});
 	});
 	
 	// Make Post  edittable
@@ -100,4 +131,52 @@ $(document).ready(function() {
 		}, "json");
 	});
 	
+	// Add a new COMMENT
+	$(".listpost").on("keypress", ".txtcomment", function(e) {
+		// e is for the value of keypress
+		
+		//Handle First time COMMENT
+		if (!($(this).hasClass("comment")))
+		{
+			var total_element = 0;
+			var lastId = 'comment_0';
+			var split_id = 0;
+			var nextCommentIndex = 1;
+		}
+		else // Not the first comment
+		{
+			var total_element = $(".comment").length;
+			var lastId = $(".comment:first").attr("id");
+			var split_id = lastId.split("_");
+			var nextCommentIndex = Number(split_id[1]) + 1;
+		}
+		
+		// Handle Enter after new comment added
+		if (e.keyCode == 13)
+		{
+			var id = this.id;
+			var comment_listId = id.split("_")[1];
+			
+			var comment_text = $("#" + id).val();
+			
+			if ($.trim($(id).val()) == '')
+			{
+				// return alert("Please add some text to comment");
+			}
+			
+			$("#" + id).val(''); // Clear the text box after add new
+			
+			console.log(comment_listId);
+			
+			$.post("ajax_actions.php", {
+				action_area: "user",
+				action: "new_comment",
+				comment_text: comment_text,
+				post_id: comment_listId
+			}, function(data) {
+				($("#comment_list_" + comment_listId).prepend(data.data))
+			}, "json");
+		}
+	});
+		
 });

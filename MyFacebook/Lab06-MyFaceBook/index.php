@@ -61,7 +61,9 @@ if (isset($_POST['Change_Password']))
 		<section>
 			<div class="text">
 				<textarea minlength="1" placeholder="What's in your mind, <?php echo htmlentities(SessionManager::getFullname());?>?"></textarea>
+				<input type="file" name="image" id="image"/>
 				<input class="addPost" type="submit" value="Post"/>
+				
 			</div>
 			<!-- Using AJAX in script.js to create a new post -->
 		</section>
@@ -98,11 +100,14 @@ if (isset($_POST['Change_Password']))
 				
 				<!-- CONTENT OF THE POST -->
 				<div class="content">
-					<p id="edit_<?php echo htmlentities($post->id); ?>" class="Ediv">
-						<?php
-							echo htmlentities($post->message);
-						?>
-					</p>
+					<?php
+						echo '<p id="edit_'.htmlentities($post->id).'" class="Ediv">
+								'.htmlentities($post->message).'
+							</p>';
+						if ($post->imagePath != null)
+							echo '<img src="'.htmlentities($post->imagePath).'" alt="Post Image">';
+					?>
+					
 				</div>
 				
 				<!-- SOCIAL BAR include LIKE BUTTON, NUMBER OF COMMENTs -->
